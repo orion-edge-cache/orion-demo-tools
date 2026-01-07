@@ -5,7 +5,7 @@
  * Reads endpoints from terraform state and runs all test suites.
  */
 
-import { log } from "@clack/prompts";
+import { log, select, isCancel } from "@clack/prompts";
 import { getEndpointsFromState } from "../shared/index.js";
 import {
   runAllSuites,
@@ -58,4 +58,17 @@ export async function runCacheTests(): Promise<void> {
   const summary = await runAllSuites(suites, endpoints);
 
   printFinalSummary(summary.totalPassed, summary.totalFailed);
+
+  // Pause to allow user to review results
+  console.log();
+  const choice = await select({
+    message: "Test results displayed above",
+    options: [
+      { value: "return", label: "Return to Demo Tools Menu" },
+    ],
+  });
+
+  if (isCancel(choice)) {
+    return;
+  }
 }

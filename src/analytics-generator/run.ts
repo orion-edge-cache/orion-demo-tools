@@ -5,7 +5,7 @@
  * Sends a mix of queries (70%) and mutations (30%) to demonstrate cache behavior.
  */
 
-import { spinner, log, text, isCancel } from "@clack/prompts";
+import { spinner, log, text, isCancel, select } from "@clack/prompts";
 import { getEndpointsFromState } from "../shared/index.js";
 import {
   sendRequest,
@@ -116,6 +116,8 @@ export async function runAnalyticsGenerator(): Promise<void> {
 
   printConfig(totalRequests, endpoint);
 
+  const startTime = Date.now();
+
   const s = spinner();
   s.start(`Sending ${totalRequests} requests...`);
 
@@ -147,4 +149,20 @@ export async function runAnalyticsGenerator(): Promise<void> {
 
   console.log();
   printFinalResult(stats);
+
+  // Calculate total duration
+  const totalDuration = ((Date.now() - startTime) / 1000).toFixed(2);
+
+  // Pause to allow user to review results
+  console.log();
+  const choice = await select({
+    message: `${totalRequests} requests sent in ${totalDuration} seconds`,
+    options: [
+      { value: "return", label: "Return to Demo Tools Menu" },
+    ],
+  });
+
+  if (isCancel(choice)) {
+    return;
+  }
 }
