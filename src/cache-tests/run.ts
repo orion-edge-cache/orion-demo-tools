@@ -1,6 +1,6 @@
 /**
  * Cache Test Runner
- * 
+ *
  * Main entry point for running cache tests.
  * Reads endpoints from terraform state and runs all test suites.
  */
@@ -46,7 +46,9 @@ export async function runCacheTests(): Promise<void> {
   try {
     endpoints = await getEndpointsFromState();
   } catch (error) {
-    log.error(error instanceof Error ? error.message : "Failed to get endpoints");
+    log.error(
+      error instanceof Error ? error.message : "Failed to get endpoints",
+    );
     return;
   }
 
@@ -57,6 +59,3 @@ export async function runCacheTests(): Promise<void> {
 
   printFinalSummary(summary.totalPassed, summary.totalFailed);
 }
-
-// Run if executed directly
-runCacheTests();

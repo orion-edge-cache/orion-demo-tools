@@ -1,6 +1,6 @@
 /**
  * Analytics Generator
- * 
+ *
  * Generates batch GraphQL requests to populate analytics data in the console dashboard.
  * Sends a mix of queries (70%) and mutations (30%) to demonstrate cache behavior.
  */
@@ -29,7 +29,7 @@ import {
 async function sendQueries(
   endpoint: string,
   count: number,
-  onProgress: (completed: number) => void
+  onProgress: (completed: number) => void,
 ): Promise<RequestResult[]> {
   const results: RequestResult[] = [];
 
@@ -57,7 +57,7 @@ async function sendMutations(
   endpoint: string,
   count: number,
   startIndex: number,
-  onProgress: (completed: number) => void
+  onProgress: (completed: number) => void,
 ): Promise<RequestResult[]> {
   const results: RequestResult[] = [];
 
@@ -68,7 +68,9 @@ async function sendMutations(
     const postId = String((i % 50) + 1);
 
     const query = getMutation(mutationType, { userId, postId, uid });
-    results.push(await sendRequest(endpoint, query, `mutation:${mutationType}`));
+    results.push(
+      await sendRequest(endpoint, query, `mutation:${mutationType}`),
+    );
 
     if ((startIndex + i + 1) % 100 === 0) {
       onProgress(startIndex + i + 1);
@@ -90,7 +92,9 @@ export async function runAnalyticsGenerator(): Promise<void> {
     const endpoints = await getEndpointsFromState();
     endpoint = endpoints.vclService;
   } catch (error) {
-    log.error(error instanceof Error ? error.message : "Failed to get endpoint");
+    log.error(
+      error instanceof Error ? error.message : "Failed to get endpoint",
+    );
     return;
   }
 
@@ -125,7 +129,7 @@ export async function runAnalyticsGenerator(): Promise<void> {
     queryCount,
     (completed) => {
       s.message(`Progress: ${completed}/${totalRequests}...`);
-    }
+    },
   );
 
   s.stop("Requests complete!");
@@ -144,6 +148,3 @@ export async function runAnalyticsGenerator(): Promise<void> {
   console.log();
   printFinalResult(stats);
 }
-
-// Run if executed directly
-runAnalyticsGenerator();
