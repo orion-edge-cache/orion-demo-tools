@@ -20,7 +20,7 @@ function extractKeysWithPrefix(surrogateKeys: string | null, prefix: string): st
  */
 async function testUserEntityKeys(endpoints: Endpoints): Promise<TestResult> {
   return executeTest("User Entity Keys", async () => {
-    const response = await sendGraphQL(endpoints.vclService, "query { users(limit: 3) { id } }");
+    const response = await sendGraphQL(endpoints.vclService, "query { users { id } }");
     const userKeys = extractKeysWithPrefix(response.surrogateKeys, "User:");
 
     if (userKeys.length < 2) {
@@ -34,7 +34,7 @@ async function testUserEntityKeys(endpoints: Endpoints): Promise<TestResult> {
  */
 async function testPostEntityKeys(endpoints: Endpoints): Promise<TestResult> {
   return executeTest("Post Entity Keys", async () => {
-    const response = await sendGraphQL(endpoints.vclService, "query { posts(limit: 3) { id } }");
+    const response = await sendGraphQL(endpoints.vclService, "query { posts { id } }");
     const postKeys = extractKeysWithPrefix(response.surrogateKeys, "Post:");
 
     if (postKeys.length < 2) {
@@ -44,21 +44,21 @@ async function testPostEntityKeys(endpoints: Endpoints): Promise<TestResult> {
 }
 
 /**
- * Test that nested entities (posts with authors) produce multiple key types
+ * Test that nested entities (users with posts) produce multiple key types
  */
 async function testNestedEntityKeys(endpoints: Endpoints): Promise<TestResult> {
   return executeTest("Nested Entity Keys", async () => {
-    const query = "query { posts(limit: 2) { id author { id } } }";
+    const query = "query { users { id posts { id } } }";
     const response = await sendGraphQL(endpoints.vclService, query);
 
-    const postKeys = extractKeysWithPrefix(response.surrogateKeys, "Post:");
     const userKeys = extractKeysWithPrefix(response.surrogateKeys, "User:");
+    const postKeys = extractKeysWithPrefix(response.surrogateKeys, "Post:");
 
-    if (postKeys.length === 0) {
-      throw new Error("Missing Post keys in nested query");
-    }
     if (userKeys.length === 0) {
       throw new Error("Missing User keys in nested query");
+    }
+    if (postKeys.length === 0) {
+      throw new Error("Missing Post keys in nested query");
     }
   });
 }

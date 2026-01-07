@@ -52,7 +52,7 @@ export async function sendGraphQL(
     body: parsedBody,
     rawBody,
     cacheStatus: parseCacheStatus(response.headers.get("x-cache")),
-    surrogateKeys: response.headers.get("surrogate-key"),
+    surrogateKeys: response.headers.get("x-debug-entities"),
     purgeKeys: response.headers.get("x-purge-keys"),
     cacheControl: response.headers.get("cache-control") || "",
   };
