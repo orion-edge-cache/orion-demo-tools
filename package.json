@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "Cache testing and analytics generation tools for Orion",
   "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc",
     "cache-test": "tsx src/cache-tests/run.ts",
     "analytics": "tsx src/analytics-generator/run.ts"
   },
