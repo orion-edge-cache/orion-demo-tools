@@ -7,6 +7,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "prepare": "npm run build",
     "cache-test": "tsx src/cache-tests/run.ts",
     "analytics": "tsx src/analytics-generator/run.ts"
   },
