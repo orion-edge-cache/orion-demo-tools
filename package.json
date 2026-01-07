@@ -1,5 +1,5 @@
 {
-  "name": "@orion/tools",
+  "name": "@orion/demo-tools",
   "version": "1.0.0",
   "description": "Cache testing and analytics generation tools for Orion",
   "type": "module",
