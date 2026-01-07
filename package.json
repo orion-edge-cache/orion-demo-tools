@@ -1,0 +1,18 @@
+{
+  "name": "@orion/tools",
+  "version": "1.0.0",
+  "description": "Cache testing and analytics generation tools for Orion",
+  "type": "module",
+  "scripts": {
+    "cache-test": "tsx src/cache-tests/run.ts",
+    "analytics": "tsx src/analytics-generator/run.ts"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
