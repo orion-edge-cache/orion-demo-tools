@@ -2,8 +2,13 @@
  * Test execution helpers
  */
 
-import type { TestResult, TestSuite, Endpoints, TestRunSummary, TestSuiteSummary } from "./types.js";
-import { printSuiteResult } from "./output.js";
+import type {
+  TestResult,
+  TestSuite,
+  Endpoints,
+  TestRunSummary,
+  TestSuiteSummary,
+} from "./types.js";
 
 /**
  * Generate a unique ID for cache-busting queries
@@ -47,13 +52,15 @@ export async function executeTest(
 
 /**
  * Run a single test suite and return summary
+ * NOTE: No longer prints output - caller is responsible for presentation
  */
-async function runSuite(suite: TestSuite, endpoints: Endpoints): Promise<TestSuiteSummary> {
+async function runSuite(
+  suite: TestSuite,
+  endpoints: Endpoints,
+): Promise<TestSuiteSummary> {
   const results = await suite.run(endpoints);
   const passed = results.filter((r) => r.passed).length;
   const failed = results.length - passed;
-
-  printSuiteResult(suite.name, results);
 
   return { name: suite.name, passed, failed, results };
 }
