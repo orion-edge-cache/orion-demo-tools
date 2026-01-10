@@ -18,6 +18,9 @@ export interface RequestResult {
   hasSurrogateKeys: boolean;
   hasPurgeKeys: boolean;
   error?: string;
+  // Error details (only populated on failure)
+  query?: string;
+  errorMessage?: string;
 }
 
 /**
@@ -56,7 +59,6 @@ export const QUERY_TYPES = [
 export const MUTATION_TYPES = [
   "updateUser",
   "createPost",
-  "deletePost",
   "createComment",
 ] as const;
 

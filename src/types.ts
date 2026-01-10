@@ -62,6 +62,19 @@ export interface RequestResult {
   hasSurrogateKeys: boolean;
   hasPurgeKeys: boolean;
   error?: string;
+  // Error details (only populated on failure)
+  query?: string;
+  errorMessage?: string;
+}
+
+/**
+ * Sample of a failed request for debugging
+ */
+export interface ErrorSample {
+  type: string;
+  status: number;
+  query: string;
+  errorMessage: string;
 }
 
 /**
@@ -101,6 +114,7 @@ export interface AnalyticsResult {
   duration: number; // Total execution time in seconds
   stats: BatchStats;
   latencyComparison: LatencyComparison | null;
+  errorSamples?: ErrorSample[]; // Sample of failed requests (max 20)
   error?: string; // If failed to start
 }
 

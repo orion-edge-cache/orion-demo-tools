@@ -38,6 +38,23 @@ export async function sendRequest(
     const duration = Date.now() - start;
     const cacheHeader = response.headers.get("x-cache") || "";
 
+    // Parse response to check for GraphQL errors
+    let errorMessage: string | undefined;
+    let isError = !response.ok;
+
+    try {
+      const json = await response.json();
+      if (json.errors?.length > 0) {
+        isError = true;
+        errorMessage = json.errors[0].message;
+      }
+    } catch {
+      // Response wasn't valid JSON
+      if (!response.ok) {
+        errorMessage = `HTTP ${response.status}`;
+      }
+    }
+
     return {
       type,
       status: response.status,
@@ -45,6 +62,11 @@ export async function sendRequest(
       cacheStatus: parseCacheStatus(cacheHeader),
       hasSurrogateKeys: !!response.headers.get("surrogate-key"),
       hasPurgeKeys: !!response.headers.get("x-purge-keys"),
+      // Include query and error on failure
+      ...(isError && {
+        query,
+        errorMessage: errorMessage || `HTTP ${response.status}`,
+      }),
     };
   } catch (error) {
     return {
@@ -54,7 +76,8 @@ export async function sendRequest(
       cacheStatus: "UNKNOWN",
       hasSurrogateKeys: false,
       hasPurgeKeys: false,
-      error: error instanceof Error ? error.message : String(error),
+      query,
+      errorMessage: error instanceof Error ? error.message : String(error),
     };
   }
 }

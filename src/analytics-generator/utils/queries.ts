@@ -24,8 +24,6 @@ const MUTATIONS = {
     `mutation { updateUser(id: "${id}", name: "${name}", email: "${email}") { id name } }`,
   createPost: (title: string, userId: string) =>
     `mutation { createPost(title: "${title}", user_id: "${userId}", body: "Analytics test content") { id title } }`,
-  deletePost: (id: string) =>
-    `mutation { deletePost(id: "${id}") { id } }`,
   createComment: (postId: string, userId: string) =>
     `mutation { createComment(post_id: "${postId}", user_id: "${userId}", body: "Test comment") { id } }`,
 };
@@ -69,8 +67,6 @@ export function getMutation(
       return MUTATIONS.updateUser(userId, `User ${uid}`, `user${uid}@test.com`);
     case "createPost":
       return MUTATIONS.createPost(`Post ${uid}`, userId);
-    case "deletePost":
-      return MUTATIONS.deletePost(postId);
     case "createComment":
       return MUTATIONS.createComment(postId, userId);
   }

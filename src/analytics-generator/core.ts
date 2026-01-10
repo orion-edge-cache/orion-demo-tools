@@ -19,6 +19,7 @@ import type {
   ProgressCallback,
   LatencyComparison,
   RequestResult,
+  ErrorSample,
 } from "../types.js";
 
 /**
@@ -59,9 +60,10 @@ async function sendQueries(
 
   for (let i = 0; i < count; i++) {
     const queryType = QUERY_TYPES[i % QUERY_TYPES.length]!;
-    const userId = String((i % 20) + 1);
-    const postId = String((i % 50) + 1);
-    const commentId = String((i % 30) + 1);
+    // Use valid IDs from db.json: users 1-5, posts 1-10, comments 1-20
+    const userId = String((i % 5) + 1);
+    const postId = String((i % 10) + 1);
+    const commentId = String((i % 20) + 1);
 
     const query = getQuery(queryType, { userId, postId, commentId });
     results.push(await sendRequest(endpoint, query, `query:${queryType}`));
@@ -89,8 +91,9 @@ async function sendMutations(
   for (let i = 0; i < count; i++) {
     const mutationType = MUTATION_TYPES[i % MUTATION_TYPES.length]!;
     const uid = Date.now().toString().slice(-6) + i;
-    const userId = String((i % 20) + 1);
-    const postId = String((i % 50) + 1);
+    // Use valid IDs from db.json: users 1-5, posts 1-10
+    const userId = String((i % 5) + 1);
+    const postId = String((i % 10) + 1);
 
     const query = getMutation(mutationType, { userId, postId, uid });
     results.push(
@@ -172,6 +175,17 @@ export async function executeAnalyticsGenerator(
   const latencyComparison = calculateLatencyComparison(results);
   const duration = (Date.now() - startTime) / 1000;
 
+  // Collect error samples (cap at 20)
+  const errorSamples: ErrorSample[] = results
+    .filter((r) => r.errorMessage)
+    .slice(0, 20)
+    .map((r) => ({
+      type: r.type,
+      status: r.status,
+      query: r.query!,
+      errorMessage: r.errorMessage!,
+    }));
+
   return {
     success: stats.errors === 0,
     endpoint,
@@ -179,5 +193,6 @@ export async function executeAnalyticsGenerator(
     duration,
     stats,
     latencyComparison,
+    errorSamples: errorSamples.length > 0 ? errorSamples : undefined,
   };
 }
