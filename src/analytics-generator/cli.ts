@@ -52,8 +52,8 @@ export async function runAnalyticsGeneratorCLI(): Promise<AnalyticsResult | null
   // Prompt for request count
   const countInput = await text({
     message: "Number of requests?",
-    placeholder: "1000",
-    defaultValue: "1000",
+    placeholder: "100",
+    defaultValue: "100",
     validate: (v) => {
       const n = parseInt(v, 10);
       if (isNaN(n) || n < 1) return "Enter a valid number";
