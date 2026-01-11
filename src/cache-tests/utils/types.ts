@@ -2,7 +2,10 @@
  * Type definitions for cache tests
  */
 
-import type { Endpoints } from "../../shared/index.js";
+import type { Endpoints, CacheStatus } from "../../shared/index.js";
+
+// Re-export CacheStatus for backwards compatibility
+export type { CacheStatus };
 
 /**
  * Result of a single test execution
@@ -21,11 +24,6 @@ export interface TestSuite {
   name: string;
   run: (endpoints: Endpoints) => Promise<TestResult[]>;
 }
-
-/**
- * Cache status from x-cache header
- */
-export type CacheStatus = "HIT" | "MISS" | "BYPASS" | "UNKNOWN";
 
 /**
  * Parsed response from a GraphQL request

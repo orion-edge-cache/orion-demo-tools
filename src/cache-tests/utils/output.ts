@@ -4,16 +4,13 @@
 
 import { log } from "@clack/prompts";
 import type { TestResult } from "./types.js";
+import { printDivider } from "../../shared/index.js";
+
+// Re-export printDivider for backwards compatibility
+export { printDivider };
 
 const PASS_SYMBOL = "\x1b[32m\u2713\x1b[0m"; // Green checkmark
 const FAIL_SYMBOL = "\x1b[31m\u2717\x1b[0m"; // Red X
-
-/**
- * Print a horizontal divider
- */
-export function printDivider(width = 40): void {
-  console.log("\u2500".repeat(width));
-}
 
 /**
  * Print the VCL endpoint being tested

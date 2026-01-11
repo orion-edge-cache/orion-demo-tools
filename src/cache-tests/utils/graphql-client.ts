@@ -1,22 +1,12 @@
 /**
  * GraphQL client for cache tests
- * 
+ *
  * All requests are sent as standard POST requests to the VCL endpoint.
  * VCL handles the transformation (POST→GET, header escaping) internally.
  */
 
-import type { GraphQLResponse, CacheStatus } from "./types.js";
-
-/**
- * Parse cache status from x-cache header
- */
-function parseCacheStatus(header: string | null): CacheStatus {
-  if (!header) return "UNKNOWN";
-  if (header.includes("HIT")) return "HIT";
-  if (header.includes("MISS")) return "MISS";
-  if (header.includes("BYPASS") || header.includes("PASS")) return "BYPASS";
-  return "UNKNOWN";
-}
+import type { GraphQLResponse } from "./types.js";
+import { parseCacheStatus } from "../../shared/index.js";
 
 /**
  * Send a GraphQL request to the VCL endpoint

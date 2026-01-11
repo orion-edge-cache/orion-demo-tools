@@ -4,13 +4,10 @@
 
 import { log } from "@clack/prompts";
 import type { BatchStats, RequestResult } from "./types.js";
+import { printDivider } from "../../shared/index.js";
 
-/**
- * Print a horizontal divider
- */
-export function printDivider(width = 40): void {
-  console.log("\u2500".repeat(width));
-}
+// Re-export printDivider for backwards compatibility
+export { printDivider };
 
 /**
  * Print batch configuration

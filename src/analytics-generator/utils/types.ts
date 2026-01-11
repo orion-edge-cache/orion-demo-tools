@@ -2,10 +2,10 @@
  * Type definitions for analytics generator
  */
 
-/**
- * Cache status from x-cache header
- */
-export type CacheStatus = "HIT" | "MISS" | "BYPASS" | "UNKNOWN";
+import type { CacheStatus } from "../../shared/index.js";
+
+// Re-export CacheStatus for backwards compatibility
+export type { CacheStatus };
 
 /**
  * Result of a single request
