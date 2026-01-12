@@ -47,6 +47,11 @@ function calculateLatencyComparison(
 }
 
 /**
+ * Callback for per-request results (for real-time streaming)
+ */
+export type ResultCallback = (result: RequestResult) => void;
+
+/**
  * Send batch of query requests
  */
 async function sendQueries(
@@ -55,6 +60,7 @@ async function sendQueries(
   startIndex: number,
   total: number,
   onProgress?: ProgressCallback,
+  onResult?: ResultCallback,
 ): Promise<RequestResult[]> {
   const results: RequestResult[] = [];
 
@@ -66,7 +72,10 @@ async function sendQueries(
     const commentId = String((i % 20) + 1);
 
     const query = getQuery(queryType, { userId, postId, commentId });
-    results.push(await sendRequest(endpoint, query, `query:${queryType}`));
+    const result = await sendRequest(endpoint, query, `query:${queryType}`);
+    results.push(result);
+
+    onResult?.(result);
 
     if (onProgress && (startIndex + i + 1) % 10 === 0) {
       onProgress(startIndex + i + 1, total);
@@ -85,6 +94,7 @@ async function sendMutations(
   startIndex: number,
   total: number,
   onProgress?: ProgressCallback,
+  onResult?: ResultCallback,
 ): Promise<RequestResult[]> {
   const results: RequestResult[] = [];
 
@@ -96,9 +106,10 @@ async function sendMutations(
     const postId = String((i % 10) + 1);
 
     const query = getMutation(mutationType, { userId, postId, uid });
-    results.push(
-      await sendRequest(endpoint, query, `mutation:${mutationType}`),
-    );
+    const result = await sendRequest(endpoint, query, `mutation:${mutationType}`);
+    results.push(result);
+
+    onResult?.(result);
 
     if (onProgress && (startIndex + i + 1) % 10 === 0) {
       onProgress(startIndex + i + 1, total);
@@ -112,12 +123,14 @@ async function sendMutations(
  * Run analytics generator and return structured results
  *
  * @param requestCount - Number of requests to send
- * @param onProgress - Optional callback for progress updates
+ * @param onProgress - Optional callback for progress updates (every 10 requests)
+ * @param onResult - Optional callback for per-request results (for real-time streaming)
  * @returns AnalyticsResult with all statistics
  */
 export async function executeAnalyticsGenerator(
   requestCount: number,
   onProgress?: ProgressCallback,
+  onResult?: ResultCallback,
 ): Promise<AnalyticsResult> {
   const startTime = Date.now();
 
@@ -161,6 +174,7 @@ export async function executeAnalyticsGenerator(
     0,
     requestCount,
     onProgress,
+    onResult,
   );
   const mutationResults = await sendMutations(
     endpoint,
@@ -168,6 +182,7 @@ export async function executeAnalyticsGenerator(
     queryCount,
     requestCount,
     onProgress,
+    onResult,
   );
 
   const results = [...queryResults, ...mutationResults];

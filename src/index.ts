@@ -47,6 +47,8 @@ export type {
   ProgressCallback,
 } from "./types.js";
 
+export type { ResultCallback } from "./analytics-generator/core.js";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // UTILITIES
 // ─────────────────────────────────────────────────────────────────────────────
